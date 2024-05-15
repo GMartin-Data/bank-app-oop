@@ -99,6 +99,9 @@ class Account(Base):
             self.session.add_all([new_withdrawal, new_deposit])
             self.session.commit()
 
+    def get_balance(self):
+        return self.balance
+
 
 class Transaction(Base):
     __tablename__ = "transactions"
