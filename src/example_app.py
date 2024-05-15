@@ -1,4 +1,4 @@
-from bank import Account, Transaction
+from bank import Account
 from db import init_db_connection
 
 
