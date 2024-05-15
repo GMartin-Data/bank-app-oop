@@ -170,3 +170,41 @@ def test_transfer_insufficient_funds(account_factory, my_session):
         assert my_session.query(Transaction).count() == 0
         # 3. Verify that session.commit wasn't called
         assert my_session.commit.call_count == 2  # One for each account        
+
+def test_transfer_negative_amount(account_factory, my_session):
+    with my_session:
+        account1 = account_factory(
+            account_id = 1,
+            balance = 100
+        )
+        account2 = account_factory(
+            account_id = 1,
+            balance = 50
+        )
+        account1.transfer(account2, -200)
+        # Checks
+        # 1. Verify both accounts' balance remain unchanged
+        assert account1.balance == 100 and account2.balance == 50
+        # 2. Verify no transaction was added
+        assert my_session.query(Transaction).count() == 0
+        # 3. Verify that session.commit wasn't called
+        assert my_session.commit.call_count == 2  # One for each account
+
+def test_transfer_zero_amount(account_factory, my_session):
+    with my_session:
+        account1 = account_factory(
+            account_id = 1,
+            balance = 100
+        )
+        account2 = account_factory(
+            account_id = 1,
+            balance = 50
+        )
+        account1.transfer(account2, 0)
+        # Checks
+        # 1. Verify both accounts' balance remain unchanged
+        assert account1.balance == 100 and account2.balance == 50
+        # 2. Verify no transaction was added
+        assert my_session.query(Transaction).count() == 0
+        # 3. Verify that session.commit wasn't called
+        assert my_session.commit.call_count == 2  # One for each account
