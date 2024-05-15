@@ -19,4 +19,22 @@ def test_deposit_normal(account_factory, my_session):
         # 3. Verify the new transaction's timestamp has been correctly added
         assert my_session.query(Transaction).filter_by(id=1).one().type == "deposit"
         # 4. Verify session.commit has been called.
-        assert my_session.commit.assert_any_call
+        assert my_session.commit.call_count == 2
+
+def test_deposit_negative_amount(account_factory, my_session):
+    with my_session:
+        account = account_factory(
+            account_id = 1,
+            balance = 100
+        )
+        account.deposit(-50)
+        # Checks
+        # 1. Verify the account balance hasn't changed
+        assert account.balance == 100
+        # 2. Verify no transaction was created
+        assert my_session.query(Transaction).count() == 0
+        # 3. Verify that session.commit wasn't called
+        assert my_session.commit.call_count == 1
+
+def test_deposit_zero_amount(account_factory, my_session):
+    
