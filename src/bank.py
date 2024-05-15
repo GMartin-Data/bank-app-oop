@@ -7,8 +7,7 @@ from datetime import datetime
 from typing import Union
 
 from sqlalchemy import Column, Float, Integer, String, DateTime, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import declarative_base, relationship
 
 
 Base = declarative_base()
