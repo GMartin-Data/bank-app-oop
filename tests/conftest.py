@@ -5,7 +5,7 @@ from src.bank import Account
 
 
 @pytest.fixture
-def session():
+def my_session():
     return UnifiedAlchemyMagicMock()
 
 @pytest.fixture
