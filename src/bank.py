@@ -45,7 +45,7 @@ class Account(Base):
             amount = float(amount)
         except ValueError:
             return False
-        if amount < 0:
+        if amount <= 0:
             return False
         return True
     
