@@ -78,7 +78,7 @@ class Account(Base):
             self.session.add(new_withdrawal)
             self.session.commit()
 
-    def transert(self, other, amount: Union[float, int]):
+    def transfer(self, other, amount: Union[float, int]):
         if self.is_valid_amount(amount) and self.balance >= amount:
             self.balance -= amount
             other.balance += amount
