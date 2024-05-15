@@ -124,3 +124,32 @@ def test_withdraw_zero_amount(account_factory, my_session):
         assert my_session.query(Transaction).count() == 0
         # 3. Verify that session.commit wasn't called
         assert my_session.commit.call_count == 1
+
+def test_transfer_normal(account_factory, my_session):
+    with my_session:
+        account1 = account_factory(
+            account_id = 1,
+            balance = 100
+        )
+        account2 = account_factory(
+            account_id = 1,
+            balance = 50
+        )
+        account1.transfer(account2, 20)
+        # Checks
+        # 1. Verify the amount is deduced from the source account's balance
+        assert account1.balance == 80
+        # 2. Verify the amount is added to the destination account's balance
+        assert account2.balance == 70
+        # 3. Verify two transactions are created with the appropriate types
+        assert my_session.query(Transaction).count() == 2
+        results = (my_session
+                   .query(Transaction)
+                   .all())
+        # NOTE: There's a weird error when
+        # filtering by transaction_id and using .one()
+        assert results[0].type == "withdraw" and results[1].type == "deposit"
+        # 4. Verify session.commit has been called
+        assert my_session.commit.call_count == 3  # 2 for accounts, 1 for both transactions
+        
+
