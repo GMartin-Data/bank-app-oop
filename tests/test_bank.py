@@ -146,10 +146,27 @@ def test_transfer_normal(account_factory, my_session):
         results = (my_session
                    .query(Transaction)
                    .all())
-        # NOTE: There's a weird error when
+        # WARNING: There's a weird error when
         # filtering by transaction_id and using .one()
         assert results[0].type == "withdraw" and results[1].type == "deposit"
         # 4. Verify session.commit has been called
         assert my_session.commit.call_count == 3  # 2 for accounts, 1 for both transactions
-        
 
+def test_transfer_insufficient_funds(account_factory, my_session):
+    with my_session:
+        account1 = account_factory(
+            account_id = 1,
+            balance = 100
+        )
+        account2 = account_factory(
+            account_id = 1,
+            balance = 50
+        )
+        account1.transfer(account2, 200)
+        # Checks
+        # 1. Verify both accounts' balance remain unchanged
+        assert account1.balance == 100 and account2.balance == 50
+        # 2. Verify no transaction was added
+        assert my_session.query(Transaction).count() == 0
+        # 3. Verify that session.commit wasn't called
+        assert my_session.commit.call_count == 2  # One for each account        
