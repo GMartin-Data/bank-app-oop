@@ -225,3 +225,48 @@ def test_get_balance_initial(account_factory, my_session):
         assert account2.get_balance() == 100
         # 3. Verify there are no transactions
         assert my_session.query(Transaction).count() == 0
+
+def test_get_balance_after_deposit(account_factory, my_session):
+    with my_session:
+        account = account_factory(
+            account_id = 1,
+            balance = 200
+        )
+        account.deposit(500)
+        # 1. Check if the new balance includes the deposit's amount
+        assert account.get_balance() == 700
+
+def test_get_balance_after_withdrawal(account_factory, my_session):
+    with my_session:
+        account = account_factory(
+            account_id = 1,
+            balance = 400
+        )
+        account.withdraw(150)
+        # 1. Check if the new balance includes the deposit's amount
+        assert account.get_balance() == 250
+
+def test_get_balance_after_failed_withdrawal(account_factory, my_session):
+    with my_session:
+        account = account_factory(
+            account_id = 1,
+            balance = 400
+        )
+        account.withdraw(500)
+        # 1. Check if the new balance includes the deposit's amount
+        assert account.get_balance() == 400
+
+def test_get_balance_after_transfer(account_factory, my_session):
+    with my_session:
+        account1 = account_factory(
+            account_id = 1,
+            balance = 400
+        )
+        account2 = account_factory(
+            account_id = 2,
+            balance = 100
+        )
+        account1.transfer(account2, 250)
+        # 1. Check that the two accounts' balances have been correctly modified
+        assert account1.balance == 150
+        assert account2.balance == 350
