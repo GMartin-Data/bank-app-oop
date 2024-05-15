@@ -80,4 +80,18 @@ def test_withdraw_normal(account_factory, my_session):
         # 4. Verify session.commit has been called.
         assert my_session.commit.call_count == 2
 
-           
+def test_withdraw_insufficient_funds(account_factory, my_session):
+    with my_session:
+        account = account_factory(
+            account_id = 1,
+            balance = 100
+        )
+        account.withdraw(200)
+        # Checks
+        # 1. Verify the account balance remains unchanged
+        assert account.balance == 100
+        # 2. Verify no transaction was created
+        assert my_session.query(Transaction).count() == 0
+        # 3. Verify that session.commit wasn't called
+        assert my_session.commit.call_count == 1
+
