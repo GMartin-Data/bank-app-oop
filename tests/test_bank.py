@@ -208,3 +208,20 @@ def test_transfer_zero_amount(account_factory, my_session):
         assert my_session.query(Transaction).count() == 0
         # 3. Verify that session.commit wasn't called
         assert my_session.commit.call_count == 2  # One for each account
+
+def test_get_balance_initial(account_factory, my_session):
+    with my_session:
+        account1 = account_factory(
+            account_id = 1,
+        )
+        account2 = account_factory(
+            account_id = 2,
+            balance = 100
+        )
+        # 1. Verify the initial balance whenever a new account is created
+        assert account1.get_balance() == 0
+        # 2. Verify the initial balance is correct for an account
+        #    created with an specified initial balance
+        assert account2.get_balance() == 100
+        # 3. Verify there are no transactions
+        assert my_session.query(Transaction).count() == 0

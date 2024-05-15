@@ -12,7 +12,7 @@ def my_session():
 
 @pytest.fixture
 def account_factory(my_session):
-    def create_account(account_id, balance):
+    def create_account(account_id, balance = 0):
         new_account = Account(
             session = my_session,
             account_id = account_id,
