@@ -60,4 +60,24 @@ def test_deposit_zero_amount(account_factory, my_session):
         # 3. Verify that session.commit wasn't called
         assert my_session.commit.call_count == 1
 
-# def test_withdraw_normal(account_factory, my_session)
+def test_withdraw_normal(account_factory, my_session):
+    with my_session:
+        account = account_factory(
+            account_id = 1,
+            balance = 100
+        )
+        account.withdraw(30)
+        # Checks
+        # 1. Verify the account balance is correctly updated
+        assert account.balance == 70
+        # 2. Verify a new transaction has been correctly added with 'withdraw' type
+        assert my_session.query(Transaction).count() == 1
+        assert (my_session
+                .query(Transaction)
+                .filter(Transaction.transaction_id == 1)  # Maybe too picky and not needed
+                .one()
+                ).type == "withdraw"
+        # 4. Verify session.commit has been called.
+        assert my_session.commit.call_count == 2
+
+           
