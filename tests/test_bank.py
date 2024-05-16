@@ -12,13 +12,13 @@ def test_deposit_normal(account_factory, my_session):
         # Checks
         # 1. Verify that current balance is updated
         assert account.balance == 150
-        # 2. Verify a new transaction has been correctly added with 'deposit' type
+        # 2. Verify a new transaction has been correctly added with 'deposit' transaction_type
         assert my_session.query(Transaction).count() == 1
         assert (my_session
                 .query(Transaction)
                 .filter(Transaction.transaction_id == 1)  # Maybe too picky and not needed
                 .one()
-                ).type == "deposit"
+                ).transaction_type == "deposit"
         # 3. Verify the new transaction's timestamp has been correctly added
         assert (my_session
                 .query(Transaction)
@@ -70,13 +70,13 @@ def test_withdraw_normal(account_factory, my_session):
         # Checks
         # 1. Verify the account balance is correctly updated
         assert account.balance == 70
-        # 2. Verify a new transaction has been correctly added with 'withdraw' type
+        # 2. Verify a new transaction has been correctly added with 'withdraw' transaction_type
         assert my_session.query(Transaction).count() == 1
         assert (my_session
                 .query(Transaction)
                 .filter(Transaction.transaction_id == 1)  # Maybe too picky and not needed
                 .one()
-                ).type == "withdraw"
+                ).transaction_type == "withdraw"
         # 4. Verify session.commit has been called.
         assert my_session.commit.call_count == 2
 
@@ -141,14 +141,14 @@ def test_transfer_normal(account_factory, my_session):
         assert account1.balance == 80
         # 2. Verify the amount is added to the destination account's balance
         assert account2.balance == 70
-        # 3. Verify two transactions are created with the appropriate types
+        # 3. Verify two transactions are created with the appropriate transaction_types
         assert my_session.query(Transaction).count() == 2
         results = (my_session
                    .query(Transaction)
                    .all())
         # WARNING: There's a weird error when
         # filtering by transaction_id and using .one()
-        assert results[0].type == "withdraw" and results[1].type == "deposit"
+        assert results[0].transaction_type == "withdraw" and results[1].transaction_type == "deposit"
         # 4. Verify session.commit has been called
         assert my_session.commit.call_count == 3  # 2 for accounts, 1 for both transactions
 

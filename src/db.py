@@ -5,7 +5,7 @@ This file contains all the logic devoted to manage the database.
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from bank import Base
+from .bank import Base
 
 
 def init_db_connection(debug=False):

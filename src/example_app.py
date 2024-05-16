@@ -1,5 +1,5 @@
-from bank import Account
-from db import init_db_connection
+from .bank import Account
+from .db import init_db_connection
 
 
 def main() -> None:

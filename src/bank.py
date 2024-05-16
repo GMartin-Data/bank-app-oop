@@ -57,7 +57,7 @@ class Account(Base):
             new_deposit = Transaction(
                 account_id = self.account_id,
                 amount = amount,
-                type = "deposit"
+                transaction_type = "deposit"
             )
             # Add this new deposit to `transactions` table and commit.
             self.session.add(new_deposit)
@@ -71,7 +71,7 @@ class Account(Base):
             new_withdrawal = Transaction(
                 account_id = self.account_id,
                 amount = amount,
-                type = "withdraw"
+                transaction_type = "withdraw"
             )
             # Add this new withdrawal to `transactions` table and commit.
             self.session.add(new_withdrawal)
@@ -88,12 +88,12 @@ class Account(Base):
             new_withdrawal = Transaction(
                 account_id = self.account_id,
                 amount = amount,
-                type = "withdraw"
+                transaction_type = "withdraw"
             )
             new_deposit = Transaction(
                 account_id = other.account_id,
                 amount = amount,
-                type = "deposit"
+                transaction_type = "deposit"
             )
             # add_all these 2 transactions in `transactions` table and commit.  
             self.session.add_all([new_withdrawal, new_deposit])
@@ -109,15 +109,15 @@ class Transaction(Base):
     transaction_id = Column(Integer, primary_key=True)
     account_id = Column(Integer, ForeignKey("accounts.account_id"))
     amount = Column(Float)
-    type = Column(String)
+    transaction_type = Column(String)
     timestamp = Column(DateTime)
     # Relationships
     # Many-to-One: any transaction has only one account
     account = relationship("Account", back_populates="transactions")
 
     # Methods
-    def __init__(self, account_id, amount, type):
+    def __init__(self, account_id, amount, transaction_type):
         self.account_id = account_id
         self.amount = amount
-        self.type = type
+        self.transaction_type = transaction_type
         self.timestamp = datetime.now()
