@@ -34,10 +34,9 @@ class Account(Base):
         self.account_id = account_id
         self.balance = balance
 
-
     def __repr__(self):
         return f"Account(id={self.account_id}, balance={self.balance:.2f})"
-    
+
     # Should this be a class or static method?
     def is_valid_amount(self, amount) -> bool:
         """Convenience method to spot non-numerical or negative amounts."""
@@ -48,16 +47,14 @@ class Account(Base):
         if amount <= 0:
             return False
         return True
-    
+
     def deposit(self, amount: Union[float, int]):
         if self.is_valid_amount(amount):
             self.balance += amount
 
             # Create this new deposit as a Transaction
             new_deposit = Transaction(
-                account_id = self.account_id,
-                amount = amount,
-                transaction_type = "deposit"
+                account_id=self.account_id, amount=amount, transaction_type="deposit"
             )
             # Add this new deposit to `transactions` table and commit.
             self.session.add(new_deposit)
@@ -69,9 +66,7 @@ class Account(Base):
 
             # Create this new withdrawal as a Transaction
             new_withdrawal = Transaction(
-                account_id = self.account_id,
-                amount = amount,
-                transaction_type = "withdraw"
+                account_id=self.account_id, amount=amount, transaction_type="withdraw"
             )
             # Add this new withdrawal to `transactions` table and commit.
             self.session.add(new_withdrawal)
@@ -86,16 +81,12 @@ class Account(Base):
 
             # Create these 2 new transactions
             new_withdrawal = Transaction(
-                account_id = self.account_id,
-                amount = amount,
-                transaction_type = "withdraw"
+                account_id=self.account_id, amount=amount, transaction_type="withdraw"
             )
             new_deposit = Transaction(
-                account_id = other.account_id,
-                amount = amount,
-                transaction_type = "deposit"
+                account_id=other.account_id, amount=amount, transaction_type="deposit"
             )
-            # add_all these 2 transactions in `transactions` table and commit.  
+            # add_all these 2 transactions in `transactions` table and commit.
             self.session.add_all([new_withdrawal, new_deposit])
             self.session.commit()
 
