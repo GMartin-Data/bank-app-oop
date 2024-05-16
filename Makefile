@@ -3,7 +3,7 @@ install:
 	python -m pip install -r requirements.txt
 
 test:
-	python -m pytest -vv -cov --cov-report=term-missing
+	python -m pytest -vv --cov --cov-report=term-missing
 
 coverage:
 	coverage report --fail-under=90
