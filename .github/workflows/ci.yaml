@@ -34,6 +34,9 @@ jobs:
     - name: Tests with pytest and pytest-cov
       run: |
         make test
+    - name: Check coverage
+      run: |
+        make coverage
     - name: Format with black
       run: |
         make format
