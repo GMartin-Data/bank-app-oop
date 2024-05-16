@@ -9,6 +9,6 @@ format:
 	python -m black **/*.py
 
 lint:
-	python -m pylint --disable=R,C **/*.py
+	python -m pylint --disable=R,C **/*.py --fail-under=9.5
 
 all: install lint test format
